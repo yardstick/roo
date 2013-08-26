@@ -1,3 +1,7 @@
+unless RUBY_VERSION > "1.9.0"
+  require 'iconv'
+end
+
 require 'spreadsheet'
 
 # Class for handling Excel-Spreadsheets
@@ -147,8 +151,13 @@ class Roo::Excel < Roo::Base
 
   def normalize_string(value)
     value = every_second_null?(value) ? remove_every_second_null(value) : value
+
     if CHARGUESS && encoding = CharGuess::guess(value)
-      encoding.encode Encoding::UTF_8
+      if RUBY_VERSION > "1.9.0"
+        encoding.encode Encoding::UTF_8
+      else
+        Iconv.conv('UTF-8//IGNORE', 'UTF-8', encoding)
+      end
     else
       platform_specific_encoding(value)
     end
@@ -158,9 +167,13 @@ class Roo::Excel < Roo::Base
     result =
       case RUBY_PLATFORM.downcase
       when /darwin|solaris/
-        value.encode Encoding::UTF_8
+        if RUBY_VERSION > "1.9.0"
+          value.encode Encoding::UTF_8
+        else
+          Iconv.conv('UTF-8//IGNORE', 'UTF-8', value)
+        end
       when /mswin32/
-        value.encode Encoding::ISO_8859_1
+        # not supporting library on Windows
       else
         value
       end
