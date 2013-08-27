@@ -1,13 +1,13 @@
-require 'csv'
 require 'time'
+require 'fastercsv'
 
-# The CSV class can read csv files (must be separated with commas) which then
+# The FasterCSV class can read csv files (must be separated with commas) which then
 # can be handled like spreadsheets. This means you can access cells like A5
 # within these files.
-# The CSV class provides only string objects. If you want conversions to other
+# The FasterCSV class provides only string objects. If you want conversions to other
 # types you have to do it yourself.
 #
-# You can pass options to the underlying CSV parse operation, via the
+# You can pass options to the underlying FasterCSV parse operation, via the
 # :csv_options option.
 #
 
@@ -18,7 +18,7 @@ class Roo::CSV < Roo::Base
 
   attr_reader :filename
 
-  # Returns an array with the names of the sheets. In CSV class there is only
+  # Returns an array with the names of the sheets. In FasterCSV class there is only
   # one dummy sheet, because a csv file cannot have more than one sheet.
   def sheets
     ['default']
@@ -61,10 +61,10 @@ class Roo::CSV < Roo::Base
     if uri?(filename)
       make_tmpdir do |tmpdir|
         filename = download_uri(filename, tmpdir)
-        CSV.foreach(filename, options, &block)
+        FasterCSV.foreach(filename, options, &block)
       end
     else
-      CSV.foreach(filename, options, &block)
+      FasterCSV.foreach(filename, options, &block)
     end
   end
 
