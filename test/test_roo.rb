@@ -312,7 +312,7 @@ class TestRoo < Test::Unit::TestCase
         [7, 2, "=SUM([.$A$1:.B6])"],
         [7, 3, "=[Sheet2.A1]"],
         [8, 2, "=SUM([.$A$1:.B7])"],
-      ], oo.formulas(oo.sheets.first)
+      ].sort, oo.formulas(oo.sheets.first).sort
 
       # setting a cell
       oo.set('A',15, 41)
@@ -385,7 +385,7 @@ class TestRoo < Test::Unit::TestCase
         [7, 2, 'SUM($A$1:B6)'],
         # [7, 3, "=[Sheet2.A1]"],
         # [8, 2, "=SUM([.$A$1:.B7])"],
-      ], oo.formulas(oo.sheets.first)
+      ].sort, oo.formulas(oo.sheets.first).sort
 
       # setting a cell
       oo.set('A',15, 41)
@@ -1598,13 +1598,7 @@ Sheet 3:
       assert_equal 12, oo.cell(4, 'C') # cell(4,'C')
       assert_equal 13, oo.cell(4, 'D') # cell(4,'D')
       assert_equal 14, oo.cell(4, 'E') # cell(4,'E')
-      assert_equal 'ABC', oo.sheet('Sheet5')
-
-      #assert_raises(ArgumentError) {
-      assert_raises(NoMethodError) {
-        # a42a is not a valid cell name, should raise ArgumentError
-        assert_equal 9999, oo.cell(42, 'AB')
-      }
+      assert_equal 'ABC', oo.sheet('Sheet5').cell(6, 'C')
     end
   end
 
@@ -1682,7 +1676,7 @@ Sheet 3:
         ['anton',[5,3,'Sheet1']],
         ['berta',[4,2,'Sheet1']],
         ['caesar',[7,2,'Sheet1']],
-      ], oo.labels, "error with labels array in class #{oo.class}"
+      ].sort, oo.labels.sort, "error with labels array in class #{oo.class}"
     end
   end
 
@@ -1721,12 +1715,12 @@ Sheet 3:
          row,col = oo.never
        }
 
-  # Reihenfolge row,col,sheet analog zu #label
+       # Reihenfolge row,col,sheet analog zu #label
        assert_equal [
-  	      ['anton',[5,3,'Sheet1']],
-  	      ['berta',[4,2,'Sheet1']],
-  	      ['caesar',[7,2,'Sheet1']],
-       ], oo.labels, "error with labels array in class #{oo.class}"
+         ['anton',[5,3,'Sheet1']],
+         ['berta',[4,2,'Sheet1']],
+         ['caesar',[7,2,'Sheet1']],
+       ].sort, oo.labels.sort, "error with labels array in class #{oo.class}"
      end
    end
 
@@ -1847,7 +1841,7 @@ where the expected result is
         oo.default_sheet = oo.sheets.first
         oo.to_matrix
       }
-      assert_equal(Matrix.empty(0,0), oo.to_matrix)
+      assert_equal(Matrix.zero(0), oo.to_matrix)
     end
   end
 
@@ -1983,7 +1977,7 @@ where the expected result is
       assert_equal [
         [4, 2, "Kommentar fuer B4"],
         [5, 2, "Kommentar fuer B5"],
-      ], oo.comments(oo.sheets.first), "comments error in class #{oo.class}"
+      ].sort, oo.comments(oo.sheets.first).sort, "comments error in class #{oo.class}"
       # no comments at the second page
       oo.default_sheet = oo.sheets[1]
       assert_equal [], oo.comments, "comments error in class #{oo.class}"
@@ -2255,7 +2249,7 @@ where the expected result is
 
     oo = Roo::Spreadsheet.open(File.join(TESTDIR, 'Bibelbund.csv'))
     parsed = oo.parse(:headers => true)
-    assert_equal headers, parsed[1].keys
+    assert_equal headers.sort, parsed[1].keys.sort
   end
 
   def test_bug_numbered_sheet_names
