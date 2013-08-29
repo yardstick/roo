@@ -196,7 +196,7 @@ class Roo::Base
     require 'matrix'
 
     sheet ||= @default_sheet
-    return Matrix.empty unless first_row
+    return Matrix.zero(0) unless first_row
 
     Matrix.rows((from_row||first_row(sheet)).upto(to_row||last_row(sheet)).map do |row|
       (from_column||first_column(sheet)).upto(to_column||last_column(sheet)).map do |col|

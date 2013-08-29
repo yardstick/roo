@@ -29,11 +29,11 @@ class TestRoo < Test::Unit::TestCase
   CSV          = true  	# do CSV tests? (.csv files)
 
   FORMATS = {
-    excel: EXCEL,
-    excelx: EXCELX,
-    openoffice: OPENOFFICE,
-    google: GOOGLE,
-    libreoffice: LIBREOFFICE
+    :excel       => EXCEL,
+    :excelx      => EXCELX,
+    :openoffice  => OPENOFFICE,
+    :google      => GOOGLE,
+    :libreoffice => LIBREOFFICE
   }
 
   ONLINE = false
@@ -443,7 +443,7 @@ class TestRoo < Test::Unit::TestCase
     if EXCEL
       if ONLINE
         url = 'http://stiny-leonhard.de/bode-v1.xls.zip'
-        excel = Roo::Excel.new(url, :zip)
+        excel = Roo::Excel.new(url, :packed => :zip)
         excel.default_sheet = excel.sheets.first
         assert_equal 'ist "e" im Nenner von H(s)', excel.cell('b', 5)
       end
@@ -454,7 +454,7 @@ class TestRoo < Test::Unit::TestCase
     if OPENOFFICE
       if ONLINE
         url = 'http://spazioinwind.libero.it/s2/rata.ods.zip'
-        sheet = Roo::OpenOffice.new(url, :zip)
+        sheet = Roo::OpenOffice.new(url, :packed => :zip)
         #has been changed: assert_equal 'ist "e" im Nenner von H(s)', sheet.cell('b', 5)
         assert_in_delta 0.001, 505.14, sheet.cell('c', 33).to_f
       end
@@ -463,7 +463,7 @@ class TestRoo < Test::Unit::TestCase
 
   def test_excel_zipped
     if EXCEL
-      oo = Roo::Excel.new(File.join(TESTDIR,"bode-v1.xls.zip"), :zip)
+      oo = Roo::Excel.new(File.join(TESTDIR,"bode-v1.xls.zip"), :packed => :zip)
       assert oo
       assert_equal 'ist "e" im Nenner von H(s)', oo.cell('b', 5)
     end
@@ -472,7 +472,7 @@ class TestRoo < Test::Unit::TestCase
   def test_openoffice_zipped
     if OPENOFFICE
       begin
-        oo = Roo::OpenOffice.new(File.join(TESTDIR,"bode-v1.ods.zip"), :zip)
+        oo = Roo::OpenOffice.new(File.join(TESTDIR,"bode-v1.ods.zip"), :packed => :zip)
         assert oo
         assert_equal 'ist "e" im Nenner von H(s)', oo.cell('b', 5)
       end
@@ -1205,16 +1205,16 @@ Sheet 3:
 
   def test_file_warning_error
     if OPENOFFICE
-      assert_raises(TypeError) { Roo::OpenOffice.new(File.join(TESTDIR,"numbers1.xls"),false,:error) }
-      assert_raises(TypeError) { Roo::OpenOffice.new(File.join(TESTDIR,"numbers1.xlsx"),false,:error) }
+      assert_raises(TypeError) { Roo::OpenOffice.new(File.join(TESTDIR,"numbers1.xls"), :packed => false, :file_warning => :error) }
+      assert_raises(TypeError) { Roo::OpenOffice.new(File.join(TESTDIR,"numbers1.xlsx"), :packed => false, :file_warning => :error) }
     end
     if EXCEL
-      assert_raises(TypeError) { Roo::Excel.new(File.join(TESTDIR,"numbers1.ods"),false,:error) }
-      assert_raises(TypeError) { Roo::Excel.new(File.join(TESTDIR,"numbers1.xlsx"),false,:error) }
+      assert_raises(TypeError) { Roo::Excel.new(File.join(TESTDIR,"numbers1.ods"), :packed => false, :file_warning => :error) }
+      assert_raises(TypeError) { Roo::Excel.new(File.join(TESTDIR,"numbers1.xlsx"), :packed => false, :file_warning => :error) }
     end
     if EXCELX
-      assert_raises(TypeError) { Roo::Excelx.new(File.join(TESTDIR,"numbers1.ods"),false,:error) }
-      assert_raises(TypeError) { Roo::Excelx.new(File.join(TESTDIR,"numbers1.xls"),false,:error) }
+      assert_raises(TypeError) { Roo::Excelx.new(File.join(TESTDIR,"numbers1.ods"), :packed => false, :file_warning => :error) }
+      assert_raises(TypeError) { Roo::Excelx.new(File.join(TESTDIR,"numbers1.xls"), :packed => false, :file_warning => :error) }
     end
   end
 
@@ -1222,36 +1222,36 @@ Sheet 3:
     if OPENOFFICE
       assert_nothing_raised(TypeError) {
         assert_raises(Zip::ZipError) {
-          Roo::OpenOffice.new(File.join(TESTDIR,"numbers1.xls"),false, :warning)
+          Roo::OpenOffice.new(File.join(TESTDIR,"numbers1.xls"), :packed => false, :file_warning => :warning)
         }
       }
       assert_nothing_raised(TypeError) {
         assert_raises(Errno::ENOENT) {
-          Roo::OpenOffice.new(File.join(TESTDIR,"numbers1.xlsx"),false, :warning)
+          Roo::OpenOffice.new(File.join(TESTDIR,"numbers1.xlsx"), :packed => false, :file_warning => :warning)
         }
       }
     end
     if EXCEL
       assert_nothing_raised(TypeError) {
         assert_raises(Ole::Storage::FormatError) {
-          Roo::Excel.new(File.join(TESTDIR,"numbers1.ods"),false, :warning)
+          Roo::Excel.new(File.join(TESTDIR,"numbers1.ods"), :packed => false, :file_warning => :warning)
         }
       }
       assert_nothing_raised(TypeError) {
         assert_raises(Ole::Storage::FormatError) {
-          Roo::Excel.new(File.join(TESTDIR,"numbers1.xlsx"),false, :warning)
+          Roo::Excel.new(File.join(TESTDIR,"numbers1.xlsx"), :packed => false, :file_warning => :warning)
         }
       }
     end
     if EXCELX
       assert_nothing_raised(TypeError) {
         assert_raises(Errno::ENOENT) {
-          Roo::Excelx.new(File.join(TESTDIR,"numbers1.ods"),false, :warning)
+          Roo::Excelx.new(File.join(TESTDIR,"numbers1.ods"), :packed => false, :file_warning => :warning)
         }
       }
       assert_nothing_raised(TypeError) {
         assert_raises(Zip::ZipError) {
-          Roo::Excelx.new(File.join(TESTDIR,"numbers1.xls"),false, :warning)
+          Roo::Excelx.new(File.join(TESTDIR,"numbers1.xls"), :packed => false, :file_warning => :warning)
         }
       }
     end
@@ -1266,27 +1266,27 @@ Sheet 3:
 
       # xls
       assert_nothing_raised() {
-        Roo::OpenOffice.new(File.join(TESTDIR,"type_openoffice.xls"),false, :ignore)
+        Roo::OpenOffice.new(File.join(TESTDIR,"type_openoffice.xls"), :packed => false, :file_warning => :ignore)
       }
       # xlsx
       assert_nothing_raised() {
-        Roo::OpenOffice.new(File.join(TESTDIR,"type_openoffice.xlsx"),false, :ignore)
+        Roo::OpenOffice.new(File.join(TESTDIR,"type_openoffice.xlsx"), :packed => false, :file_warning => :ignore)
       }
     end
     if EXCEL
       assert_nothing_raised() {
-        Roo::Excel.new(File.join(TESTDIR,"type_excel.ods"),false, :ignore)
+        Roo::Excel.new(File.join(TESTDIR,"type_excel.ods"), :packed => false, :file_warning => :ignore)
       }
       assert_nothing_raised() {
-        Roo::Excel.new(File.join(TESTDIR,"type_excel.xlsx"),false, :ignore)
+        Roo::Excel.new(File.join(TESTDIR,"type_excel.xlsx"), :packed => false, :file_warning => :ignore)
       }
     end
     if EXCELX
       assert_nothing_raised() {
-        Roo::Excelx.new(File.join(TESTDIR,"type_excelx.ods"),false, :ignore)
+        Roo::Excelx.new(File.join(TESTDIR,"type_excelx.ods"), :packed => false, :file_warning => :ignore)
       }
       assert_nothing_raised() {
-        Roo::Excelx.new(File.join(TESTDIR,"type_excelx.xls"),false, :ignore)
+        Roo::Excelx.new(File.join(TESTDIR,"type_excelx.xls"), :packed => false, :file_warning => :ignore)
       }
     end
   end
@@ -1593,17 +1593,17 @@ Sheet 3:
 
   def test_cell_methods
     with_each_spreadsheet(:name=>'numbers1') do |oo|
-      assert_equal 10, oo.a4 # cell(4,'A')
-      assert_equal 11, oo.b4 # cell(4,'B')
-      assert_equal 12, oo.c4 # cell(4,'C')
-      assert_equal 13, oo.d4 # cell(4,'D')
-      assert_equal 14, oo.e4 # cell(4,'E')
-      assert_equal 'ABC', oo.c6('Sheet5')
+      assert_equal 10, oo.cell(4, 'A') # cell(4,'A')
+      assert_equal 11, oo.cell(4, 'B') # cell(4,'B')
+      assert_equal 12, oo.cell(4, 'C') # cell(4,'C')
+      assert_equal 13, oo.cell(4, 'D') # cell(4,'D')
+      assert_equal 14, oo.cell(4, 'E') # cell(4,'E')
+      assert_equal 'ABC', oo.sheet('Sheet5')
 
       #assert_raises(ArgumentError) {
       assert_raises(NoMethodError) {
         # a42a is not a valid cell name, should raise ArgumentError
-        assert_equal 9999, oo.a42a
+        assert_equal 9999, oo.cell(42, 'AB')
       }
     end
   end
@@ -1679,9 +1679,9 @@ Sheet 3:
     with_each_spreadsheet(:name=>'named_cells', :format=>[:openoffice,:excelx,:libreoffice]) do |oo|
       # oo.default_sheet = oo.sheets.first
       assert_equal [
-	      ['anton',[5,3,'Sheet1']],
-	      ['berta',[4,2,'Sheet1']],
-	      ['caesar',[7,2,'Sheet1']],
+        ['anton',[5,3,'Sheet1']],
+        ['berta',[4,2,'Sheet1']],
+        ['caesar',[7,2,'Sheet1']],
       ], oo.labels, "error with labels array in class #{oo.class}"
     end
   end
@@ -1880,9 +1880,9 @@ where the expected result is
       assert_equal '=SUM([.A2:.D2])', oo.formula('e',2)
       assert_equal '=SUM([.A3:.D3])', oo.formula('e',3)
       assert_equal [
-       [1,5,'=SUM([.A1:.D1])'],
-        [2,5,'=SUM([.A2:.D2])'],
         [3,5,'=SUM([.A3:.D3])'],
+        [1,5,'=SUM([.A1:.D1])'],
+        [2,5,'=SUM([.A2:.D2])'],
       ], oo.formulas
 
     end
@@ -2095,13 +2095,13 @@ where the expected result is
 
   def test_download_uri_with_query_string
     dir = File.expand_path("#{File.dirname __FILE__}/files")
-    { xls:  [EXCEL,       Roo::Excel],
-      xlsx: [EXCELX,      Roo::Excelx],
-      ods:  [OPENOFFICE,  Roo::OpenOffice]}.each do |extension, (flag, type)|
+    { :xls  => [EXCEL,       Roo::Excel],
+      :xlsx => [EXCELX,      Roo::Excelx],
+      :ods  => [OPENOFFICE,  Roo::OpenOffice]}.each do |extension, (flag, type)|
         if flag
           file = "#{dir}/simple_spreadsheet.#{extension}"
           url = "http://test.example.com/simple_spreadsheet.#{extension}?query-param=value"
-          stub_request(:any, url).to_return(body: File.read(file))
+          stub_request(:any, url).to_return(:body => File.read(file))
           spreadsheet = type.new(url)
           spreadsheet.default_sheet = spreadsheet.sheets.first
           assert_equal 'Task 1', spreadsheet.cell('f', 4)
