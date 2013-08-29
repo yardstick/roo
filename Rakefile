@@ -1,5 +1,7 @@
 require 'jeweler'
 
+task :default => [:test]
+
 Jeweler::Tasks.new do |gem|
   # gem is a Gem::Specification... see http://docs.rubygems.org/read/chapter/20 for more options
   gem.name = "roo"
