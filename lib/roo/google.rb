@@ -277,7 +277,7 @@ class Roo::Google < Roo::Base
   end
 
   def reinitialize
-    initialize(@filename, user: @user, password: @password, access_token: @access_token)
+    initialize(@filename, :user => @user, :password => @password, :access_token => @access_token)
   end
 
   def session
